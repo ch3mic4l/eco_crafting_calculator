@@ -3,6 +3,8 @@ from lib import html_parser
 from lib import receipe_filter
 from lib import arg_parser
 
+from sys import exit
+
 
 def get_html():
     print('Downloading HTML from https://wiki.play.eco/en/Crafting')
@@ -27,16 +29,19 @@ def list_crafting_stations(receipe_list: list):
     show_receipes.print_crafting_stations()
 
 
-def list_crafting_materials(receipe_list: list, item_to_craft: str, qty: int = 1):
+def list_crafting_materials(receipe_list: list, item_to_craft: str, qty: int = 1, module: int = 0):
     show_receipes = receipe_filter.ReceipeFilter(receipe_list)
-    show_receipes.print_crafting_materials(item_to_craft, qty)
+    show_receipes.print_crafting_materials(item_to_craft, qty, module)
 
 
 def parse_the_args():
     eco_args_parser = arg_parser.EcoArgParser().parse_the_args()
+    if eco_args_parser.module > 5:
+        print('Invalid module level, please use 0-5')
+        exit(101)
     if eco_args_parser.list_crafting_material:
         parsed_data = parse_html()
-        list_crafting_materials(parsed_data, eco_args_parser.item, int(eco_args_parser.quantity))
+        list_crafting_materials(parsed_data, eco_args_parser.item, int(eco_args_parser.quantity), eco_args_parser.module)
 
 
 if __name__ == '__main__':
